@@ -34,6 +34,8 @@ async fn main() {
                 
                 // Genstats category
                 genstats::players_in_multiplayer(),
+                genstats::cheater_count(),
+                genstats::get_total_users(),
                 
                 ],
             ..Default::default()

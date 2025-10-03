@@ -25,6 +25,7 @@ pub struct Metric {
     pub __name__: String,
     pub instance: String,
     pub job: String,
+    pub status: String,
 }
 
 #[derive(Debug)]
@@ -132,7 +133,7 @@ pub async fn get_active_users() -> Result<i32, String> {
                 match real_json_wrapped {
                     Ok(response_data) => {
                         for element in response_data.data.result.iter() {
-                            if element.metric.__name__ == "PlayingMultiplayer".to_string() {
+                            if element.metric.status == "PlayingMultiplayer".to_string() {
                                 let wrapped_value = element.value.1.parse::<i32>();
                                 match wrapped_value {
                                     Ok(result_to_return) => {
