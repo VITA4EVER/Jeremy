@@ -28,18 +28,6 @@ pub struct Metric {
     pub status: String,
 }
 
-#[derive(Debug)]
-struct UserStatus {
-    status: String,
-}
-
-#[derive(Debug)]
-struct MatchData {
-    map_id: String,
-    game_mode: String,
-    private: bool,
-}
-
 pub async fn fetch_total_users() -> Result<i32, String> {
     let url = "http://localhost:9090/api/v1/query?query=mirage_total_users";
     let resp_wrapped = reqwest::get(url).await;
@@ -80,7 +68,7 @@ pub async fn fetch_total_users() -> Result<i32, String> {
 }
 
 pub async fn get_cheater_users() -> Result<i32, String> {
-    let url = "http://localhost:9090/api/v1/query?query=cheater_users";
+    let url = "http://localhost:9090/api/v1/query?query=mirage_cheater_users";
     let resp_wrapped = reqwest::get(url).await;
     match resp_wrapped {
         Ok(resp) => {
@@ -120,7 +108,7 @@ pub async fn get_cheater_users() -> Result<i32, String> {
 
 // note: this specifically returns active users IN MULTIPLAYER.
 pub async fn get_active_users() -> Result<i32, String> {
-    let url = "http://localhost:9090/api/v1/query?query=active_users";
+    let url = "http://localhost:9090/api/v1/query?query=mirage_active_users";
     let resp_wrapped = reqwest::get(url).await;
     match resp_wrapped {
         Ok(resp) => {
@@ -140,7 +128,7 @@ pub async fn get_active_users() -> Result<i32, String> {
                                         return Ok(result_to_return)
                                     }
                                     Err(error) => {
-                                        return Err(format!("{}", error))
+                                        return Err(format!("Error when parsing the i32 from a String: {}", error))
                                     }
                                 }
                             }
