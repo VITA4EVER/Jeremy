@@ -26,6 +26,7 @@ pub struct Metric {
     pub __name__: String,
     pub instance: String,
     pub job: String,
+    #[serde(default)] // skip this in cases where it does not exist.
     pub status: String,
 }
 
