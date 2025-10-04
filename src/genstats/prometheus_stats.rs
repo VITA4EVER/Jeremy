@@ -1,3 +1,4 @@
+use log::info;
 use reqwest::StatusCode;
 use serde::Deserialize;
 
@@ -41,16 +42,19 @@ pub async fn fetch_total_users() -> Result<i32, String> {
                 let real_json_wrapped = resp.json::<Response>().await;
                 match real_json_wrapped {
                     Ok(response_data) => {
-                        // ! improve the error handling here! data.result[0] might result a problem!
-                        let final_result = response_data.data.result[0].value.1.parse::<i32>();
-                        match final_result {
-                            Ok(needed_return_value) => {
-                                return Ok(needed_return_value)
+                        if let Some(prefinal_result) = response_data.data.result.get(0) {
+                            let final_result = prefinal_result.value.1.parse::<i32>();
+                            match final_result {
+                                Ok(needed_return_value) => {
+                                    return Ok(needed_return_value)
+                                }
+                                Err(error) => {
+                                    // Error when parsing the i32 from a String
+                                    return Err(format!("Error when parsing the i32 from a String: {}", error))
+                                }
                             }
-                            Err(error) => {
-                                // Error when parsing the i32 from a String
-                                return Err(format!("{}", error))
-                            }
+                        } else {
+                            return Err("No such index in the response_data.data.result vector!".to_string())
                         }
                     }
                     Err(error) => {
@@ -80,16 +84,19 @@ pub async fn get_cheater_users() -> Result<i32, String> {
                 let real_json_wrapped = resp.json::<Response>().await;
                 match real_json_wrapped {
                     Ok(response_data) => {
-                        // ! improve the error handling here! data.result[0] might result a problem!
-                        let final_result = response_data.data.result[0].value.1.parse::<i32>();
-                        match final_result {
-                            Ok(needed_return_value) => {
-                                return Ok(needed_return_value)
+                        if let Some(prefinal_result) = response_data.data.result.get(0) {
+                            let final_result = prefinal_result.value.1.parse::<i32>();
+                            match final_result {
+                                Ok(needed_return_value) => {
+                                    return Ok(needed_return_value)
+                                }
+                                Err(error) => {
+                                    // Error when parsing the i32 from a String
+                                    return Err(format!("Error when parsing the i32 from a String: {}", error))
+                                }
                             }
-                            Err(error) => {
-                                // Error when parsing the i32 from a String
-                                return Err(format!("{}", error))
-                            }
+                        } else {
+                            return Err("No such index in the response_data.data.result vector!".to_string())
                         }
                     }
                     Err(error) => {
@@ -121,6 +128,7 @@ pub async fn get_active_users() -> Result<i32, String> {
                 match real_json_wrapped {
                     Ok(response_data) => {
                         for element in response_data.data.result.iter() {
+                            info!("{}", element.metric.status); // for debugging, remove later
                             if element.metric.status == "PlayingMultiplayer".to_string() {
                                 let wrapped_value = element.value.1.parse::<i32>();
                                 match wrapped_value {
